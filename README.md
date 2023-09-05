@@ -68,4 +68,7 @@ WHERE c.AccountNumber = tr. ReceiverAccountNumber
 CREATE (tr) - [:RECEIVES_FROM] -> (c)
 ```
 
+## Explore the Data
+
+
 
