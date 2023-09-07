@@ -70,5 +70,23 @@ CREATE (tr) - [:RECEIVES_FROM] -> (c)
 
 ## Explore the Data
 
+Customer whose name is Greta that has made purchases with the Maestro card 
+```cypher
+MATCH (c:CUSTOMERS {FirstName: "Greta"}) – [rel:PURCHASES_FROM] -> (tr:TRANSACTIONS {CardIssuer: "Maestro"})
+RETURN c, tr
+```
+
+The most popular credit card used for varous Merchants
+```cypher
+MATCH (t:TRANSACTIONS)
+RETURN t.Merchant, t.CardIssuer, count(t.TransactionID) ORDER BY t.Merchant, count(t.TransactionID) DESC
+```
+
+The number of transfers each Customer has made 
+```cypher
+MATCH (c:CUSTOMERS) – [:SENDS_TO] -> (tr:TRANSFERS) 
+RETURN c.FirstName + " " + c.LastName as CustName, c. AccountNumber as AccountNumber, count(distinct tr. ReceiverAccountNumber) as CountSend
+```
+
 
 
