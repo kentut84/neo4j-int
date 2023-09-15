@@ -139,7 +139,7 @@ def countnode(label):
     results=session.run(q1,x)
     return {"response":[{"Country":row["Country"],"Count":row["count"]}for row in results]}
 
-#POST API FUNCTION
+#API TO CREATE
 @app.post("/create")
 def createnode(node:nodemodel):
     driver_neo4j=connection()
@@ -152,6 +152,35 @@ def createnode(node:nodemodel):
     results=session.run(q2,y)
     data=[{"Name":row["name"]} for row in results][0]["Name"]
     return{"response":"node created with customer name as: "+data}
+
+#API TO UPDATE INFORMATION
+@app.put("/update")
+def update(node:nodemodel,inputname):
+    driver_neo4j=connection()
+    session=driver_neo4j.session()
+    q3="""
+    match(n:mycustomer{name:$inputname}) set n.name=$name, n.cust_id=$cust_id return n.name as name
+    """
+    z={"inputname":inputname,"name":node.name,"cust_id":node.cust_id}
+    results=session.run(q3,z)
+    data=[{"Name":row["name"]} for row in results]
+    if (len(data)>0):
+       data=data[0]["Name"]
+       return {"response":"node updated with new name: "+data}
+    else:
+       return {"response":"name could not be found"}
+
+#API TO DELETE INFORMATION
+@app.delete("/delete/{cust_id}")
+def delete(cust_id:int):
+    driver_neo4j=connection()
+    session=driver_neo4j.session()
+    q4="""
+    match(n:mycustomer{cust_id:$cust_id}) delete n
+    """
+    a={"cust_id":cust_id}
+    session.run(q4,a)
+    return "customer id deleted"
 ```
 
 ### Starting the API
