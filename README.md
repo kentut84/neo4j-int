@@ -186,6 +186,11 @@ def delete(cust_id:int):
 ### Starting the API
 uvicorn main:app --port 8081
 <br>![image](https://github.com/kentut84/neo4j-int/assets/16041392/aca196e2-b042-4f77-837d-72a8a78de601)
+<br>
+
+### FastAPI Swagger - Test The API
+<img width="1421" alt="image" src="https://github.com/kentut84/neo4j-int/assets/16041392/54fe3f94-b93b-48d6-abab-088d6db78905">
+
 
 
 
