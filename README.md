@@ -98,8 +98,10 @@ RETURN c.FirstName + " " + c.LastName as CustName, c. AccountNumber as AccountNu
 
 ### Writing the API
 Customer Count
+<br>main.py
 ```python
 from fastapi import FastAPI
+from pydantic import BaseModel
 from neo4j import GraphDatabase
 import os
 from dotenv import load_dotenv
@@ -109,6 +111,10 @@ load_dotenv()
 uri=os.getenv("uri")
 user=os.getenv("user")
 pwd=os.getenv("pwd")
+
+class nodemodel(BaseModel):
+        name:str
+        cust_id:int
 
 def connection():
         driver=GraphDatabase.driver(uri=uri,auth=(user,pwd))
@@ -120,6 +126,7 @@ def default():
     return {"response":"this is my default test"}
 
 
+#GET API FUNCTION
 @app.get("/count")
 def countnode(label):
     driver_neo4j=connection()
@@ -131,6 +138,25 @@ def countnode(label):
     x={"a":label}
     results=session.run(q1,x)
     return {"response":[{"Country":row["Country"],"Count":row["count"]}for row in results]}
+
+#POST API FUNCTION
+@app.post("/create")
+def createnode(node:nodemodel):
+    driver_neo4j=connection()
+    session=driver_neo4j.session()
+    q2="""
+    create(n:mycustomer{name:$name,cust_id:$cust_id}) return n.name as name
+    """
+ 
+    y={"name":node.name,"cust_id":node.cust_id}
+    results=session.run(q2,y)
+    data=[{"Name":row["name"]} for row in results][0]["Name"]
+    return{"response":"node created with customer name as: "+data}
 ```
+
+### Starting the API
+uvicorn main:app --port 8081
+<br>![image](https://github.com/kentut84/neo4j-int/assets/16041392/aca196e2-b042-4f77-837d-72a8a78de601)
+
 
 
